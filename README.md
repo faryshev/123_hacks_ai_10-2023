@@ -11,3 +11,10 @@ file checker - модуль проверки считанного докумен
 API - web-API для масштабируемости решения
 
 telegram bot - оболочка для удобства работы с решением
+
+## Start API server
+
+```
+1. Создайте .env файл (пример .env.example)
+2. sudo docker-compose up -d --force-recreate --build
+```

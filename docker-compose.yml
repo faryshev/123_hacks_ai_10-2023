@@ -1,0 +1,68 @@
+version: '3.2'
+
+services:
+    postgres:
+        image: postgres:alpine
+        restart: always
+        expose:
+            - 5432
+        env_file:
+            - .env
+        environment:
+            POSTGRES_DB: $POSTGRES_DB
+            POSTGRES_USER: $POSTGRES_USER
+            POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+
+            TZ: $TIMEZONE
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data/
+
+    server:
+        image: docrec-server:latest
+        build: ./DocRecServer
+        restart: always
+        ports:
+            - mode: host
+              protocol: tcp
+              published: 5555
+              target: 5555
+        env_file:
+            - .env
+        environment:
+            PROJECT_NAME: $PROJECT_NAME
+            PROJECT_VERSION: $PROJECT_VERSION
+
+            SERVER_HOST: $SERVER_HOST
+            SERVER_PORT: $SERVER_PORT
+
+            WORKERS: $WORKERS
+
+            OPENAPI: $OPENAPI
+            ECHO_DB: $ECHO_DB
+
+            LOGGER: $SERVER_LOGGER
+            LOGS_PATH: $SERVER_LOGS_PATH
+            LOGS_COUNT: $SERVER_LOGS_COUNT
+
+            BACKEND_CORS_ORIGINS: $BACKEND_CORS_ORIGINS
+
+            TRUSTED_HOSTS: $TRUSTED_HOSTS
+
+            REDIRECT_HTTPS: $REDIRECT_HTTPS
+
+            POSTGRES_SERVER: $POSTGRES_SERVER
+            POSTGRES_DB: $POSTGRES_DB
+            POSTGRES_USER: $POSTGRES_USER
+            POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+
+            TZ: $TIMEZONE
+        depends_on:
+            - postgres
+        volumes:
+            - ./server-data/logs:/var/lib/server/data/logs
+
+
+
+volumes:
+    postgres-data:
+    server-data:
